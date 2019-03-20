@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *     fields={"id", "email"},
+ *     errorPath="email",
+ *     message="email.unique"
+ * )
  */
 class User implements UserInterface
 {
@@ -19,16 +26,18 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(name="first_name", type="string", length=50, nullable=false)
+     * @Assert\NotBlank(message="first_name.required")
      */
     private $firstName;
 
     /**
      * @ORM\Column(name="last_name", type="string", length=100, nullable=false)
+     * @Assert\NotBlank(message="last_name.required")
      */
     private $lastName;
 
     /**
-     * @ORM\Column(name="occupation", type="string", length=100, nullable=false)
+     * @ORM\Column(name="occupation", type="string", length=100, nullable=true)
      */
     private $occupation;
 
@@ -39,6 +48,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="email.required")
+     * @Assert\Email(message="email.invalid")
      */
     private $email;
 
@@ -47,22 +58,30 @@ class User implements UserInterface
      */
     private $isActive;
 
-    /**
-     * @ORM\Column(name="api_token", type="string", length=255, nullable=true)
-     */
-    private $apiToken;
-
     
     /**
      * @ORM\Column(type="json")
      */
     private $roles = [];
 
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
+
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="password.required")
+     * @Assert\Length(min="8", minMessage="password.min")
      */
     private $password;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -198,18 +217,6 @@ class User implements UserInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function getApiToken(): ?string
-    {
-        return $this->apiToken;
-    }
-
-    public function setApiToken(?string $apiToken): self
-    {
-        $this->apiToken = $apiToken;
 
         return $this;
     }

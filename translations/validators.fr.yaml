@@ -1,0 +1,14 @@
+email:
+  required: L'adresse mail est obligatoire.
+  invalid: Adresse email invalide.
+  unique: L'adresse email existe déjà.
+
+first_name:
+  required: Le prénom est obligatoire.
+
+last_name:
+  required: Le nom est obligatoire.
+
+password:
+  required: Le mot de passe est obligatoire.
+  min: Le mot de passe doit contenir au moins 8 caractères.
