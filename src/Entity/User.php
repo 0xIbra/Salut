@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(
- *     fields={"id", "email"},
+ *     fields={"email"},
  *     errorPath="email",
  *     message="email.unique"
  * )

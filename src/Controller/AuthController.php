@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,14 +28,14 @@ class AuthController extends AbstractController
     /**
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
-     * @param ObjectManager $em
+     * @param EntityManagerInterface $em
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
      * @return JsonResponse
      *
 //     * @Route("/register", methods={"POST"})
      */
-    public function register(Request $request, UserPasswordEncoderInterface $encoder, ObjectManager $em,
+    public function register(Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em,
                              SerializerInterface $serializer, ValidatorInterface $validator)
     {
 
