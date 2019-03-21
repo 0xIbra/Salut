@@ -1,0 +1,5 @@
+auth:
+  incorrect: Identifiants invalides.
+
+account:
+  notActive: Ce compte est desactivé.

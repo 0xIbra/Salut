@@ -66,6 +66,12 @@ class User implements UserInterface
 
 
     /**
+     * @ORM\Column(name="last_login", type="datetime", nullable=true)
+     */
+    private $lastLogin;
+
+
+    /**
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
@@ -78,9 +84,11 @@ class User implements UserInterface
      */
     private $password;
 
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->isActive = false;
     }
 
     public function getId(): ?int
@@ -217,6 +225,30 @@ class User implements UserInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $lastLogin): self
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

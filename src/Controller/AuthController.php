@@ -52,7 +52,9 @@ class AuthController extends AbstractController
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user->setIsActive(true);
+        $pass = $user->getPassword();
+        $user->setPassword($encoder->encodePassword($user, $pass));
+
         $em->persist($user);
         $em->flush();
 
