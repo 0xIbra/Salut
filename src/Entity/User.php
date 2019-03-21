@@ -17,6 +17,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface
 {
+
+    const ROLE_ADMIN = 'Administrateur';
+    const ROLE_SUPER_ADMIN = 'Administrateur';
+    const ROLE_ORGANIZER = 'Organisateur';
+    const ROLE_PARTICIPANT = 'Participant';
+    const ROLE_SPEAKER = 'Intervenant';
+    const ROLE_MANAGER = 'Gérant';
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -88,6 +97,12 @@ class User implements UserInterface
      * @Assert\Length(min="8", minMessage="password.min")
      */
     private $password;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="Participant", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $participations;
 
 
     public function __construct()
