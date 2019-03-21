@@ -1,7 +1,12 @@
-#register:
-#  path: /register
-#  controller: App\Controller\AuthController::register
-#  methods: POST
+register:
+  path: /register
+  controller: App\Controller\AuthController::register
+  methods: POST
+
+emailConfirmation:
+  path: /confirmation/{token}
+  controller: App\Controller\AuthController::confirmEmail
+  methods: [GET]
 
 login_check:
   path: /api/login_check

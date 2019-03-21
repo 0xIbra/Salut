@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Location;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
@@ -48,6 +47,11 @@ class Event
      * @ORM\Column(type="integer")
      */
     private $spots;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
+     */
+    private $organizer;
 
     /**
      * @ORM\OneToMany(targetEntity="Program", mappedBy="event", cascade={"persist", "remove"})
@@ -200,6 +204,18 @@ class Event
                 $program->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOrganizer(): ?User
+    {
+        return $this->organizer;
+    }
+
+    public function setOrganizer(?User $organizer): self
+    {
+        $this->organizer = $organizer;
 
         return $this;
     }

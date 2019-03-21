@@ -33,7 +33,7 @@ class AuthController extends AbstractController
      */
     public function index()
     {
-        return new JsonResponse(['Hello World!']);
+        return $this->render('auth/index.html.twig');
     }
 
     /**
