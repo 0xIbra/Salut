@@ -1,2 +1,16 @@
-<h2>Bonjour {{ name }} !</h2>
+{% extends 'email/base_email.html.twig' %}
 
+{% block subject %}
+    <h2>{{ 'account.confirmation.hello'| trans }} {{ name }} !</h2>
+{% endblock %}
+
+{% block body_html %}
+    <p>
+        {{ 'account.confirmation.content'| trans }}
+        {{ confirmationUrl }}
+    </p>
+{% endblock %}
+
+{% block styles %}
+    
+{% endblock %}

@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\User\UserEvent;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthController extends AbstractController
 {
+
+    private $eventDispatcher;
+
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @Route("/")
@@ -32,8 +43,6 @@ class AuthController extends AbstractController
      * @param SerializerInterface $serializer
      * @param ValidatorInterface $validator
      * @return JsonResponse
-     *
-//     * @Route("/register", methods={"POST"})
      */
     public function register(Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em,
                              SerializerInterface $serializer, ValidatorInterface $validator)
@@ -53,6 +62,9 @@ class AuthController extends AbstractController
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $event = new UserEvent($user, $request);
+        $this->eventDispatcher->dispatch(UserEvent::ON_REGISTRATION_SUCCESS, $event);
+
         $pass = $user->getPassword();
         $user->setPassword($encoder->encodePassword($user, $pass));
 
@@ -65,5 +77,33 @@ class AuthController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
+
+    public function confirmEmail($token = null, EntityManagerInterface $em, TranslatorInterface $translator)
+    {
+        if (null === $token) {
+            return new JsonResponse([
+                'status' => false,
+                'message' => $translator->trans('account.confirmation.token.missing')
+            ]);
+        }
+
+        $user = $em->getRepository(User::class)->loadByConfirmationToken($token);
+        if (null === $user) {
+            return new JsonResponse([
+                'status' => false,
+                'message' => $translator->trans('account.confirmation.token.invalid')
+            ]);
+        }
+
+        $user->setIsActive(true);
+        $user->setConfirmationToken(null);
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse([
+            'status' => true,
+            'message' => $translator->trans('account.confirmation.confirmed')
+        ]);
+    }
 
 }

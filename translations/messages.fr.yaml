@@ -3,3 +3,11 @@ auth:
 
 account:
   notActive: Ce compte est desactivé.
+  confirmation:
+    title: Confirmation email
+    hello: Bonjour
+    content: Pour activer votre compte, appuyez sur le lien suivant
+    token:
+      missing: Le token d'activation n'a pas été trouvé.
+      invalid: Le token d'activation est invalide.
+    confirmed: Votre compte a bien été activé.

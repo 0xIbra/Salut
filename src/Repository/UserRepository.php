@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -69,4 +70,18 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function loadByConfirmationToken($token)
+    {
+        try {
+            return $this->createQueryBuilder('u')
+                ->where('u.confirmationToken = :token')
+                ->setParameter('token', $token)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
 }

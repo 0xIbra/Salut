@@ -6,7 +6,7 @@
  * Time: 06:24
  */
 
-namespace App\EventListener;
+namespace App\EventListener\User;
 
 
 use App\Entity\User;

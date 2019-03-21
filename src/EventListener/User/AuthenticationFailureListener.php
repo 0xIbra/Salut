@@ -6,7 +6,7 @@
  * Time: 06:48
  */
 
-namespace App\EventListener;
+namespace App\EventListener\User;
 
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;

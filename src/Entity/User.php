@@ -64,6 +64,11 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    /**
+     * @ORM\Column(name="confirmation_token", type="string", length=255, nullable=true)
+     */
+    private $confirmationToken;
+
 
     /**
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
@@ -249,6 +254,18 @@ class User implements UserInterface
     public function setCreatedAt(?\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken(?string $confirmationToken): self
+    {
+        $this->confirmationToken = $confirmationToken;
 
         return $this;
     }
