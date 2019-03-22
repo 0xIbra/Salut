@@ -5,9 +5,15 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
+ * @UniqueEntity(
+ *     fields={"uniqueId"},
+ *     errorPath="uniqueId",
+ *     message="event.unique"
+ * )
  */
 class Event
 {
@@ -53,6 +59,11 @@ class Event
      * @ORM\Column(type="integer")
      */
     private $spots;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Image", cascade={"persist", "remove"})
+     */
+    private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
@@ -235,6 +246,18 @@ class Event
     public function setUniqueId(string $uniqueId): self
     {
         $this->uniqueId = $uniqueId;
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

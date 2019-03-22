@@ -78,6 +78,13 @@ class User implements UserInterface
      */
     private $isActive;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Image", cascade={"persist", "remove"})
+     * @Groups({"profile", "admin", "public"})
+     */
+    private $image;
+
     
     /**
      * @ORM\Column(type="json")
@@ -369,6 +376,18 @@ class User implements UserInterface
                 $event->setOrganizer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

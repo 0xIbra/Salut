@@ -12,3 +12,6 @@ last_name:
 password:
   required: Le mot de passe est obligatoire.
   min: Le mot de passe doit contenir au moins 8 caractères.
+
+event:
+  unique: \"uniqueId\" doit être unique et ne doit pas être déjà utilisé.
