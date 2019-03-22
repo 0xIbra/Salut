@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Event\User\UserEvent;
+use App\Utils\JSON;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -114,13 +116,13 @@ class AuthController extends AbstractController
 
     /**
      * @param SerializerInterface $serializer
-     * @return JsonResponse
+     * @return Response
      */
     public function profile(SerializerInterface $serializer)
     {
         $user = $this->getUser();
 
-        return new JsonResponse($serializer->serialize($user, 'json', ['groups' => 'profile']), Response::HTTP_OK);
+        return JSON::JSONResponseWithGroups($user, Response::HTTP_OK, $serializer, ['profile']);
     }
 
 }
