@@ -106,4 +106,12 @@ class AuthController extends AbstractController
         ]);
     }
 
+
+    public function profile(SerializerInterface $serializer)
+    {
+        $user = $this->getUser();
+
+        return new JsonResponse($serializer->serialize($user, 'json', ['groups' => 'profile']), Response::HTTP_OK);
+    }
+
 }

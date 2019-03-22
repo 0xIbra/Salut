@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,28 +34,33 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"profile", "admin", "public"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="first_name", type="string", length=50, nullable=false)
      * @Assert\NotBlank(message="first_name.required")
+     * @Groups({"profile", "admin", "public"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(name="last_name", type="string", length=100, nullable=false)
      * @Assert\NotBlank(message="last_name.required")
+     * @Groups({"profile", "admin", "public"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(name="occupation", type="string", length=100, nullable=true)
+     * @Groups({"profile", "admin", "public"})
      */
     private $occupation;
 
     /**
      * @ORM\Column(name="bio", type="string", length=255, nullable=true)
+     * @Groups({"profile", "admin", "public"})
      */
     private $bio;
 
@@ -62,17 +68,20 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="email.required")
      * @Assert\Email(message="email.invalid")
+     * @Groups({"profile", "admin", "public"})
      */
     private $email;
 
     /**
      * @ORM\Column(name="is_active", type="boolean", nullable=false)
+     * @Groups({"profile", "admin"})
      */
     private $isActive;
 
     
     /**
      * @ORM\Column(type="json")
+     * @Groups({"profile", "admin"})
      */
     private $roles = [];
 
@@ -84,12 +93,14 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
+     * @Groups({"profile", "admin", "public"})
      */
     private $lastLogin;
 
 
     /**
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @Groups({"profile", "admin"})
      */
     private $createdAt;
 
@@ -105,14 +116,18 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="Participant", mappedBy="user", cascade={"persist", "remove"})
      * @MaxDepth(2)
+     * @Groups({"profile", "admin"})
      */
     private $participations;
 
 
     /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="organizer", cascade={"persist", "remove"})
+     * @Groups({"profile", "admin"})
      */
     private $events;
+
+
 
     public function __construct()
     {

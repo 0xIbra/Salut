@@ -11,3 +11,8 @@ emailConfirmation:
 login_check:
   path: /api/login_check
   methods: [POST]
+
+profile:
+  path: /api/auth/profile
+  methods: GET
+  controller: App\Controller\AuthController::profile

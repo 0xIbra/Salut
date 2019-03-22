@@ -18,6 +18,12 @@ class Event
      */
     private $id;
 
+
+    /**
+     * @ORM\Column(name="unique_id", type="string", length=255, nullable=false)
+     */
+    private $uniqueId;
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -71,6 +77,7 @@ class Event
 
     public function __construct()
     {
+        $this->uniqueId = uniqid('', true);
         $this->enabled = false;
         $this->createdAt = new \DateTime();
         $this->programs = new ArrayCollection();
@@ -216,6 +223,18 @@ class Event
     public function setOrganizer(?User $organizer): self
     {
         $this->organizer = $organizer;
+
+        return $this;
+    }
+
+    public function getUniqueId(): ?string
+    {
+        return $this->uniqueId;
+    }
+
+    public function setUniqueId(string $uniqueId): self
+    {
+        $this->uniqueId = $uniqueId;
 
         return $this;
     }

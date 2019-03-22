@@ -37,6 +37,21 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
 
+    app.event.jwt_token_not_found:
+        class: App\EventListener\User\JWTNotFoundListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
+
+    app.event.jwt_expired_listener:
+        class: App\EventListener\User\JWTExpiredListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
+
+    app.event.jwt_invalid_listener:
+        class: App\EventListener\User\JWTInvalidListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
+
     App\EventListener\User\EmailConfirmationListener:
         tags:
             - { name: kernel.event_listener, event: App\Event\User\UserEvent }

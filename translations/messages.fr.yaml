@@ -1,5 +1,9 @@
 auth:
   incorrect: Identifiants invalides.
+  token:
+    notfound: Token JWT n'a pas été trouvé.
+    expired: Token JWT est expiré et n'est plus valide.
+    invalid: Token JWT n'est pas un token valide.
 
 account:
   notActive: Ce compte est desactivé.
