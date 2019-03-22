@@ -19,9 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthController extends AbstractController
 {
-
     private $eventDispatcher;
-
 
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -30,6 +28,8 @@ class AuthController extends AbstractController
 
     /**
      * @Route("/")
+     *
+     * @return Response
      */
     public function index()
     {
@@ -77,7 +77,13 @@ class AuthController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-
+    /**
+     * @param null $token
+     * @param EntityManagerInterface $em
+     * @param TranslatorInterface $translator
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function confirmEmail($token = null, EntityManagerInterface $em, TranslatorInterface $translator)
     {
         if (null === $token) {
@@ -106,7 +112,10 @@ class AuthController extends AbstractController
         ]);
     }
 
-
+    /**
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
     public function profile(SerializerInterface $serializer)
     {
         $user = $this->getUser();
