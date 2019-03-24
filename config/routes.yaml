@@ -21,3 +21,8 @@ myEvents:
   path: /api/auth/events
   methods: GET
   controller: App\Controller\EventController::myEvents
+
+createEvent:
+  path: /api/auth/events
+  methods: POST
+  controller: App\Controller\EventController::createEvent

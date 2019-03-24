@@ -15,3 +15,7 @@ account:
       missing: Le token d'activation n'a pas été trouvé.
       invalid: Le token d'activation est invalide.
     confirmed: Votre compte a bien été activé.
+
+event:
+  created: L'événement a bien été crée.
+  edited: L'événement a bien été modifié.

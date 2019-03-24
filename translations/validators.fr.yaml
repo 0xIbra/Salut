@@ -15,3 +15,6 @@ password:
 
 event:
   unique: \"uniqueId\" doit être unique et ne doit pas être déjà utilisé.
+
+  publicId:
+    unique: \"publicId\" doit être unique et ne doit pas être déjà utilisé.

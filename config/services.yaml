@@ -55,3 +55,9 @@ services:
     App\EventListener\User\EmailConfirmationListener:
         tags:
             - { name: kernel.event_listener, event: App\Event\User\UserEvent }
+
+    app.object_constructor:
+        class: App\Serializer\ObjectConstructor
+
+    jms_serializer.object_constructor:
+        alias: app.object_constructor

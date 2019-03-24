@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
@@ -13,6 +14,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     fields={"uniqueId"},
  *     errorPath="uniqueId",
  *     message="event.unique"
+ * )
+ * @UniqueEntity(
+ *     fields={"publicId"},
+ *     errorPath="publicId",
+ *     message="event.publicId.unique"
  * )
  */
 class Event
@@ -24,11 +30,16 @@ class Event
      */
     private $id;
 
-
     /**
      * @ORM\Column(name="unique_id", type="string", length=255, nullable=false)
      */
     private $uniqueId;
+
+
+    /**
+     * @ORM\Column(name="public_id", type="string", length=50, nullable=true, unique=true)
+     */
+    private $publicId;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -67,6 +78,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
+     * @Assert\NotNull()
      */
     private $organizer;
 
@@ -88,7 +100,8 @@ class Event
 
     public function __construct()
     {
-        $this->uniqueId = uniqid('', true);
+        $this->uniqueId = uniqid('salut_', true);
+        $this->publicId = uniqid('', true);
         $this->enabled = false;
         $this->createdAt = new \DateTime();
         $this->programs = new ArrayCollection();
@@ -258,6 +271,18 @@ class Event
     public function setImage(?Image $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getPublicId(): ?string
+    {
+        return $this->publicId;
+    }
+
+    public function setPublicId(?string $publicId): self
+    {
+        $this->publicId = $publicId;
 
         return $this;
     }
