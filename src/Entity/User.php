@@ -136,6 +136,23 @@ class User implements UserInterface
     private $events;
 
 
+    /**
+     * @ORM\OneToMany(targetEntity="Notification", mappedBy="to", cascade={"persist", "remove"})
+     */
+    private $notifications;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="from", cascade={"persist", "remove"})
+     */
+    private $invitationsSent;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="to", cascade={"persist"})
+     */
+    private $invitationsReceived;
+
+
 
     public function __construct()
     {
@@ -143,6 +160,9 @@ class User implements UserInterface
         $this->isActive = false;
         $this->participations = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->invitationsSent = new ArrayCollection();
+        $this->invitationsReceived = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -389,6 +409,99 @@ class User implements UserInterface
     public function setImage(?Image $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invitation[]
+     */
+    public function getInvitationsSent(): Collection
+    {
+        return $this->invitationsSent;
+    }
+
+    public function addInvitationsSent(Invitation $invitationsSent): self
+    {
+        if (!$this->invitationsSent->contains($invitationsSent)) {
+            $this->invitationsSent[] = $invitationsSent;
+            $invitationsSent->setFrom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationsSent(Invitation $invitationsSent): self
+    {
+        if ($this->invitationsSent->contains($invitationsSent)) {
+            $this->invitationsSent->removeElement($invitationsSent);
+            // set the owning side to null (unless already changed)
+            if ($invitationsSent->getFrom() === $this) {
+                $invitationsSent->setFrom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invitation[]
+     */
+    public function getInvitationsReceived(): Collection
+    {
+        return $this->invitationsReceived;
+    }
+
+    public function addInvitationsReceived(Invitation $invitationsReceived): self
+    {
+        if (!$this->invitationsReceived->contains($invitationsReceived)) {
+            $this->invitationsReceived[] = $invitationsReceived;
+            $invitationsReceived->setTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationsReceived(Invitation $invitationsReceived): self
+    {
+        if ($this->invitationsReceived->contains($invitationsReceived)) {
+            $this->invitationsReceived->removeElement($invitationsReceived);
+            // set the owning side to null (unless already changed)
+            if ($invitationsReceived->getTo() === $this) {
+                $invitationsReceived->setTo(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getTo() === $this) {
+                $notification->setTo(null);
+            }
+        }
 
         return $this;
     }
