@@ -26,3 +26,25 @@ createEvent:
   path: /api/auth/events
   methods: POST
   controller: App\Controller\EventController::createEvent
+
+getEvent:
+  path: /api/auth/events/{event}
+  methods: GET
+  controller: App\Controller\EventController::getEvent
+
+getPublicEvent:
+  path: /api/auth/events/public/{publicId}
+  methods: GET
+  controller: App\Controller\EventController::getPublicEvent
+
+editEvent:
+  path: /api/auth/events
+  methods: PUT
+  controller: App\Controller\EventController::editEvent
+
+deleteEvent:
+  path: /api/auth/events/{event}
+  methods: DELETE
+  controller: App\Controller\EventController::deleteEvent
+  requirements:
+    event: '\d+'

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,73 +28,89 @@ class Event
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="unique_id", type="string", length=255, nullable=false)
+     * @Serializer\Groups({"profile"})
+     * @Serializer\SerializedName("unique_id")
      */
     private $uniqueId;
 
 
     /**
      * @ORM\Column(name="public_id", type="string", length=50, nullable=true, unique=true)
+     * @Serializer\Groups({"public", "profile", "admin"})
+     * @Serializer\SerializedName("public_id")
      */
     private $publicId;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="Location", cascade={"persist", "remove"})
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $location;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $start;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $end;
 
     /**
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $spots;
 
     /**
      * @ORM\ManyToOne(targetEntity="Image", cascade={"persist", "remove"})
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="events")
      * @Assert\NotNull()
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $organizer;
 
     /**
      * @ORM\OneToMany(targetEntity="Program", mappedBy="event", cascade={"persist", "remove"})
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $programs;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $enabled;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $createdAt;
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Security\Voter\Voters;
 use App\Utils\JSON;
 use App\Utils\Validator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,41 +42,64 @@ class EventController extends AbstractController
         return JSON::JSONResponse($events, Response::HTTP_OK, $this->serializer);
     }
 
+    public function getEvent(Event $event = null)
+    {
+        if (null === $event) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.notfound')
+            ], Response::HTTP_NOT_FOUND, $this->serializer);
+        }
+
+        if (!$this->isGranted(Voters::VIEW, $event)) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.denied')
+            ], Response::HTTP_FORBIDDEN, $this->serializer);
+        }
+
+        return JSON::JSONResponseWithGroups($event, Response::HTTP_OK, $this->serializer, ['public']);
+    }
+
+    public function getPublicEvent($publicId = null)
+    {
+        if (null === $publicId) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.notfound')
+            ], Response::HTTP_NOT_FOUND, $this->serializer);
+        }
+
+        $event = $this->em->getRepository(Event::class)->findOneBy(['publicId' => $publicId]);
+
+        if (null === $event) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.notfound')
+            ], Response::HTTP_NOT_FOUND, $this->serializer);
+        }
+
+        if (!$this->isGranted(Voters::VIEW, $event)) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.denied')
+            ], Response::HTTP_FORBIDDEN, $this->serializer);
+        }
+
+        return JSON::JSONResponseWithGroups($event, Response::HTTP_OK, $this->serializer, ['public']);
+    }
+
     public function createEvent(Request $request)
     {
         $event = $this->serializer->deserialize($request->getContent(), Event::class, 'json');
-        if ($event->getId() !== null) {
-            $managedEvent = $this->em->getRepository(Event::class)->find($event->getId());
-            if ($managedEvent !== null) {
-                $managedEvent
-                    ->setTitle($event->getTitle())
-                    ->setDescription($event->getDescription())
-                    ->setLocation($event->getLocation())
-                    ->setStart($event->getStart())
-                    ->setEnd($event->getEnd())
-                    ->setSpots($event->getSpots())
-                    ->setImage($event->getImage())
-                    ->setPublicId($event->getPublicId())
-                    ->setEnabled($event->getEnabled());
-
-                $event = $managedEvent;
-            }
-        }
         $event->setOrganizer($this->getUser());
         $validation = Validator::validate($this->validator, $event);
         if ($validation['status']) {
-            $message = null;
-            if ($event->getId() !== null)
-                $message = $this->translator->trans('event.edited');
-            else
-                $message = $this->translator->trans('event.created');
-
             $this->em->persist($event);
             $this->em->flush();
-
             return JSON::JSONResponse([
                 'status' => true,
-                'message' => $message
+                'message' => $this->translator->trans('event.created')
             ], Response::HTTP_CREATED, $this->serializer);
         }
 
@@ -83,6 +107,54 @@ class EventController extends AbstractController
             'status' => false,
             'messages' => $validation['messages']
         ], Response::HTTP_UNPROCESSABLE_ENTITY, $this->serializer);
+    }
+
+    public function editEvent(Request $request)
+    {
+        $event = $this->serializer->deserialize($request->getContent(), Event::class, 'json');
+        $managedEvent = $this->em->getRepository(Event::class)->find($event->getId());
+        if (null === $managedEvent) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.notfound')
+            ], Response::HTTP_NOT_FOUND, $this->serializer);
+        }
+
+        $managedEvent
+            ->setTitle($event->getTitle())
+            ->setDescription($event->getDescription())
+            ->setLocation($event->getLocation())
+            ->setStart($event->getStart())
+            ->setEnd($event->getEnd())
+            ->setSpots($event->getSpots())
+            ->setImage($event->getImage())
+            ->setPublicId($event->getPublicId())
+            ->setEnabled($event->getEnabled());
+
+        $this->em->persist($managedEvent);
+        $this->em->flush();
+
+        return JSON::JSONResponse([
+            'status' => true,
+            'message' => $this->translator->trans('event.edited')
+        ], Response::HTTP_ACCEPTED, $this->serializer);
+    }
+
+    public function deleteEvent(Event $event = null)
+    {
+        if ($event === null) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $this->translator->trans('event.notfound')
+            ], Response::HTTP_BAD_REQUEST, $this->serializer);
+        }
+
+        $this->em->remove($event);
+        $this->em->flush();
+        return JSON::JSONResponse([
+            'status' => false,
+            'message' => $this->translator->trans('event.deleted')
+        ], Response::HTTP_ACCEPTED, $this->serializer);
     }
 
 }

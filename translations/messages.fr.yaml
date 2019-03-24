@@ -19,3 +19,6 @@ account:
 event:
   created: L'événement a bien été crée.
   edited: L'événement a bien été modifié.
+  deleted: L'événement a bien été supprimé.
+  notfound: L'événement demandé n'a pas été trouvé.
+  denied: Vous n'avez pas le droit pour effectuer cette action.
