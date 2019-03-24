@@ -102,11 +102,19 @@ class Event
      */
     private $programs;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="event", cascade={"persist", "remove"})
+     */
+    private $invitations;
+
+
     /**
      * @ORM\Column(type="boolean")
      * @Serializer\Groups({"public", "profile", "admin"})
      */
     private $enabled;
+
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -122,6 +130,7 @@ class Event
         $this->enabled = false;
         $this->createdAt = new \DateTime();
         $this->programs = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -300,6 +309,37 @@ class Event
     public function setPublicId(?string $publicId): self
     {
         $this->publicId = $publicId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invitation[]
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): self
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations[] = $invitation;
+            $invitation->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): self
+    {
+        if ($this->invitations->contains($invitation)) {
+            $this->invitations->removeElement($invitation);
+            // set the owning side to null (unless already changed)
+            if ($invitation->getEvent() === $this) {
+                $invitation->setEvent(null);
+            }
+        }
 
         return $this;
     }

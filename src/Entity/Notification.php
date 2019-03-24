@@ -17,9 +17,9 @@ class Notification
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=100)
+     * @ORM\Column(name="subject", type="string", length=100)
      */
-    private $title;
+    private $subject;
 
 
     /**
@@ -29,10 +29,32 @@ class Notification
 
 
     /**
+     * @ORM\Column(name="link", type="string", length=255, nullable=true)
+     */
+    private $link;
+
+    /**
      * @ORM\ManyToOne(targetEntity="User")
      */
     private $to;
 
+    /**
+     * @ORM\Column(name="seen", type="boolean")
+     */
+    private $seen;
+
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+
+    public function __construct()
+    {
+        $this->seen = false;
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -71,6 +93,54 @@ class Notification
     public function setTo(?User $to): self
     {
         $this->to = $to;
+
+        return $this;
+    }
+
+    public function getSubject(): ?string
+    {
+        return $this->subject;
+    }
+
+    public function setSubject(string $subject): self
+    {
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): self
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    public function getSeen(): ?bool
+    {
+        return $this->seen;
+    }
+
+    public function setSeen(bool $seen): self
+    {
+        $this->seen = $seen;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

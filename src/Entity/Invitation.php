@@ -16,6 +16,12 @@ class Invitation
      */
     private $id;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Event", inversedBy="invitations")
+     */
+    private $event;
+
     /**
      * @ORM\ManyToOne(targetEntity="User")
      */
@@ -87,6 +93,18 @@ class Invitation
     public function setTo(?User $to): self
     {
         $this->to = $to;
+
+        return $this;
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): self
+    {
+        $this->event = $event;
 
         return $this;
     }
