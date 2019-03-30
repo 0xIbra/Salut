@@ -6,6 +6,7 @@ auth:
     invalid: Token JWT n'est pas un token valide.
 
 account:
+  edited: Vos données ont bien été modifiés.
   notActive: Ce compte est desactivé.
   confirmation:
     title: Confirmation email
@@ -15,6 +16,10 @@ account:
       missing: Le token d'activation n'a pas été trouvé.
       invalid: Le token d'activation est invalide.
     confirmed: Votre compte a bien été activé.
+  password:
+    oldInvalid: Le mot de passe actuel n'est pas correct.
+    notmatch: Le nouveau mot de passe et la confirmation ne correspondent pas.
+    changed: Le nouveau mot de passe a bien été enregistré.
 
 event:
   created: L'événement a bien été crée.

@@ -48,3 +48,13 @@ deleteEvent:
   controller: App\Controller\EventController::deleteEvent
   requirements:
     event: '\d+'
+
+editProfile:
+  path: /api/auth/profile
+  methods: PUT
+  controller: App\Controller\AuthController::editProfile
+
+changePassword:
+  path: /api/auth/password
+  methods: PUT
+  controller: App\Controller\AuthController::changePassword

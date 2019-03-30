@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Event\User\UserEvent;
 use App\Utils\JSON;
+use App\Utils\Validator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
@@ -123,6 +124,67 @@ class AuthController extends AbstractController
         $user = $this->getUser();
 
         return JSON::JSONResponseWithGroups($user, Response::HTTP_OK, $serializer, ['profile']);
+    }
+
+
+    public function editProfile(Request $request, SerializerInterface $serializer, ValidatorInterface $validator,
+                                EntityManagerInterface $em, TranslatorInterface $translator)
+    {
+        $user = $this->getUser();
+        $updatedUser = $serializer->deserialize($request->getContent(), User::class, 'json');
+
+        $user->setFirstName($updatedUser->getFirstName());
+        $user->setLastName($updatedUser->getLastName());
+        $user->setOccupation($updatedUser->getOccupation());
+        $user->setBio($updatedUser->getBio());
+
+        $validation = Validator::validate($validator, $user);
+        if (!$validation['status']) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'messages' => $validation['messages']
+            ], Response::HTTP_UNPROCESSABLE_ENTITY, $serializer);
+        }
+
+        $em->persist($user);
+        $em->flush();
+
+        return JSON::JSONResponseWithGroups([
+            'status' => true,
+            'message' => $translator->trans('account.edited'),
+            'user' => $user
+        ], Response::HTTP_ACCEPTED, $serializer, ['profile', 'public']);
+    }
+
+
+    public function changePassword(Request $request, SerializerInterface $serializer, ValidatorInterface $validator,
+                                    EntityManagerInterface $em, TranslatorInterface $translator, UserPasswordEncoderInterface $encoder)
+    {
+        $json = json_decode($request->getContent());
+        $user = $this->getUser();
+
+        if ($user->getPassword() !== $encoder->encodePassword(User::class, $json->oldPassword)) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $translator->trans('account.password.oldInvalid')
+            ], Response::HTTP_BAD_REQUEST, $serializer);
+        }
+
+        if ($json->newPassword !== $json->confirm) {
+            return JSON::JSONResponse([
+                'status' => false,
+                'message' => $translator->trans('account.password.notmatch')
+            ], Response::HTTP_BAD_REQUEST, $serializer);
+        }
+
+        $user->setPassword($encoder->encodePassword(User::class, $json->newPassword));
+        $em->persist($user);
+        $em->flush();
+
+        return JSON::JSONResponse([
+            'status' => true,
+            'message' => $translator->trans('account.password.changed')
+        ], Response::HTTP_ACCEPTED, $serializer);
     }
 
 }
